@@ -40,3 +40,23 @@ solution18 = undefined
 solution19 = undefined
 
 solution20 = undefined
+
+solution21 = undefined
+
+solution22 = undefined
+
+solution23 = undefined
+
+solution24 = undefined
+
+solution25 = undefined
+
+solution26 = undefined
+
+solution27 = undefined
+
+solution28 = undefined
+
+solution29 = undefined
+
+solution30 = undefined

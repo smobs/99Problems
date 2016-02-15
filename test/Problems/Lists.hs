@@ -11,33 +11,35 @@ type TestType = Int
 
 tests :: TestTree
 tests = testGroup "List Problems"
-                  [ testProperty "Return the last element in the list" lastProp
-                  , testProperty "Return all but the last element in the list" initProp
-                  , testProperty "Return the kth element in the list" kthProp
-                  , testProperty "Find the number of elements in the list" lengthProp
-                  , testProperty "Reverse a list" reverseProp
-                  , testProperty "Find out whether a list is a palindrome" palindromeProperty
-                  , testProperty "Flatten a nested list" flattenProp
-                  , testProperty "Eliminate duplicates" dupProp
-                  , testProperty "Pack consecutive duplicates of list elements into sublists." packListProp
-                  , testProperty "Run-length encoding of a list." runLengthProp
+                  [ testProperty "1. Return the last element in the list" lastProp
+                  , testProperty "2. Return all but the last element in the list" initProp
+                  , testProperty "3. Return the kth element in the list" kthProp
+                  , testProperty "4. Find the number of elements in the list" (sameFunction length solution4)
+                  , testProperty "5. Reverse a list" (sameFunction reverse solution5)
+                  , testProperty "6. Find out whether a list is a palindrome" palindromeProperty
+                  , testProperty "7. Flatten a nested list" flattenProp
+                  , testProperty "8. Eliminate duplicates" (sameFunction L.nub solution8)
+                  , testProperty "9. Pack consecutive duplicates of list elements into sublists." (sameFunction tPack solution9)
+                  , testProperty "10. Run-length encoding of a list."
+                                 (sameFunction tRun solution10)
+                  , testProperty "11. Modified run length encoding"
+                                 (sameFunction tEncodeModified solution11)
                   ]
 
+sameFunction :: (Show a, Eq a) => ([TestType] -> a) -> ([TestType] -> a) -> [TestType] -> Bool
+
+sameFunction f1 f2 xs = f1 xs == f2 xs
 lastProp :: [TestType] -> Bool
-lastProp  xs = last xs == solution1 xs
+lastProp [] = True
+lastProp xs = last xs == solution1 xs
 
 initProp :: [TestType] -> Bool
+initProp [] = True
 initProp xs = init xs == solution2 xs
 
 kthProp :: Int -> [TestType] -> Property
 kthProp i xs = i == 0 ==>
         xs !! i === solution3 i xs
-
-lengthProp :: [TestType] -> Bool
-lengthProp xs = length xs == solution4 xs
-
-reverseProp :: [TestType] -> Bool
-reverseProp xs = reverse xs == solution5 xs
 
 palindromeProperty :: Property
 palindromeProperty = palinProp solution6 .&&.  (notPalindrone (\xs -> solution6 xs))
@@ -61,20 +63,18 @@ tflatten :: NestedList a -> [a]
 tflatten (Elem x) = [x]
 tflatten (List x) = concatMap tflatten x
 
-dupProp :: [TestType] -> Bool
-dupProp xs = L.nub xs == solution8 xs
-
-packListProp :: [TestType] -> Bool
-packListProp xs = tPack xs == solution9 xs
-
 tPack :: Eq a => [a] -> [[a]]
 tPack (x:xs) = let (first,rest) = span (==x) xs
                  in (x:first) : tPack rest
 tPack [] = []
 
-runLengthProp :: [TestType] -> Bool
-runLengthProp xs = tRun xs == solution10 xs
-
 tRun :: Eq a => [a] -> [(Int, a)]
 tRun xs = let enc = tPack xs in
      map (\x -> (length x, head x)) enc
+
+tEncodeModified :: Eq a => [a] -> [ListItem a]
+tEncodeModified = map encodeHelper . tRun
+    where
+      encodeHelper (1,x) = Single x
+      encodeHelper (n,x) = Multiple n x
+
