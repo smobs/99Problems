@@ -6,29 +6,33 @@ import           Solutions.Lists
 import           Test.Tasty
 import           Test.Tasty.QuickCheck
 import           Types
-
-type TestType = Int
+import           Utils
 
 tests :: TestTree
 tests = testGroup "List Problems" $ reverse
                   [ testProperty "1. Return the last element in the list" lastProp
                   , testProperty "2. Return all but the last element in the list" initProp
                   , testProperty "3. Return the kth element in the list" kthProp
-                  , testProperty "4. Find the number of elements in the list" (sameFunction length solution4)
-                  , testProperty "5. Reverse a list" (sameFunction reverse solution5)
+                  , testProperty "4. Find the number of elements in the list" (sameFunctionList length solution4)
+                  , testProperty "5. Reverse a list" (sameFunctionList reverse solution5)
                   , testProperty "6. Find out whether a list is a palindrome" palindromeProperty
                   , testProperty "7. Flatten a nested list" flattenProp
-                  , testProperty "8. Eliminate duplicates" (sameFunction L.nub solution8)
-                  , testProperty "9. Pack consecutive duplicates of list elements into sublists." (sameFunction tPack solution9)
+                  , testProperty "8. Eliminate duplicates" (sameFunctionList L.nub solution8)
+                  , testProperty "9. Pack consecutive duplicates of list elements into sublists." (sameFunctionList tPack solution9)
                   , testProperty "10. Run-length encoding of a list."
-                                 (sameFunction tRun solution10)
+                                 (sameFunctionList tRun solution10)
                   , testProperty "11. Modified run length encoding"
-                                 (sameFunction tEncodeModified solution11)
+                                 (sameFunctionList tEncodeModified solution11)
+                  , testProperty "12. Decode run length encoding" (sameFunctionListItem tDecodeRunEncoding solution12)
                   ]
 
-sameFunction :: (Show a, Eq a) => ([TestType] -> a) -> ([TestType] -> a) -> [TestType] -> Bool
 
-sameFunction f1 f2 xs = f1 xs == f2 xs
+sameFunctionList :: (Show a, Eq a) => ([TestType] -> a) -> ([TestType] -> a) -> [TestType] -> Bool
+sameFunctionList = sameFunction
+
+sameFunctionListItem :: (Show a, Eq a) => ([ListItem TestType] -> a) -> ([ListItem TestType] -> a) -> [ListItem TestType] -> Bool
+sameFunctionListItem = sameFunction
+
 lastProp :: [TestType] -> Bool
 lastProp [] = True
 lastProp xs = last xs == solution1 xs
@@ -78,3 +82,5 @@ tEncodeModified = map encodeHelper . tRun
       encodeHelper (1,x) = Single x
       encodeHelper (n,x) = Multiple n x
 
+tDecodeRunEncoding :: [ListItem a] -> [a]
+tDecodeRunEncoding = undefined

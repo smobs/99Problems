@@ -12,3 +12,8 @@ instance Arbitrary a => Arbitrary (NestedList a) where
 
 
 data ListItem a = Single a | Multiple Int a deriving (Show, Eq)
+
+instance Arbitrary a => Arbitrary (ListItem a) where
+         arbitrary = oneof
+                   [ Single <$> arbitrary
+                   , Multiple <$> arbitrary <*> arbitrary]
