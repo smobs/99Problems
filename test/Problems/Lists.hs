@@ -27,7 +27,12 @@ tests = testGroup "List Problems" $ reverse
                   , testProperty "13. Modified run length encoding without sublists"
                                  (sameFunctionList tEncodeModified solution13)
                   , testProperty "14. Duplicate all elements of the list."  (sameFunctionList tDuplicate solution14)
-                  , testProperty "15. Replicate the element a given number of times" repeatProp ]
+                  , testProperty "15. Replicate the element a given number of times" repeatProp
+                  , testProperty "16. Drop every nth element" dropNthProp
+                  , testProperty "17. Split a list into two parts" splitProp
+                  , testProperty "18. Splice a list." sliceProp
+                  , testProperty "19. Rotate list to the left." rotateProp
+                  , testProperty "20. Remove element at." removeProp]
 
 
 sameFunctionList :: (Show a, Eq a) => ([TestType] -> a) -> ([TestType] -> a) -> [TestType] -> Bool
@@ -93,8 +98,37 @@ decodeModified = concatMap decodeHelper
 
 tDuplicate list = concat [[x,x] | x <- list]
 
-repeatProp :: Int -> [TestType] ->  Bool
-repeatProp i = sameFunctionList (r i) (`solution15` i)
+repeatProp :: Positive Int -> [TestType] ->  Bool
+repeatProp (Positive i) = sameFunctionList (r i) (`solution15` i)
            where
                 r :: Int -> [TestType] -> [TestType]
                 r = concatMap . replicate
+
+dropNthProp :: Positive Int -> [TestType] ->  Bool
+dropNthProp  (Positive i) = sameFunctionList (r i) (`solution16` i)
+                                where
+                                     r :: Int -> [TestType] -> [TestType]
+                                     r =  \n -> map snd . filter ((n/=) . fst) . zip (cycle [1..n])
+
+splitProp :: Positive Int -> [TestType] ->  Property
+splitProp (Positive i) xs = i < length xs ==>(splitAt i xs ) == (solution17 xs i)
+
+sliceProp :: Positive Int -> Positive Int -> [TestType] ->  Property
+sliceProp (Positive i) (Positive j) xs = i + j < length xs ==> (slice xs i j) ==  (solution18 xs i j)
+          where
+          slice [] _ _ = Just []
+          slice xs k n  | k == n = Just []
+                        | k > n || k > length xs ||
+                          n > length xs || k < 0 || n < 0 = Nothing
+                        | k == 0 = Just (take n xs)
+                        | otherwise = Just (drop (k-1) $ take n xs)
+
+rotateProp :: Int -> [TestType] -> Bool
+rotateProp i = sameFunctionList (rotate i) (`solution19` i)
+           where
+               rotate n xs = take (length xs) $ drop (length xs + n) $ cycle xs
+
+removeProp :: Positive Int -> [TestType] -> Property
+removeProp (Positive i) xs = i < length xs ==> sameFunction (removeAt i) (`solution20`i) xs
+           where
+           removeAt n xs = (xs !! (n - 1), take (n - 1) xs ++ drop n xs)
