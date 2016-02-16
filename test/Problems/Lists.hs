@@ -21,10 +21,13 @@ tests = testGroup "List Problems" $ reverse
                   , testProperty "9. Pack consecutive duplicates of list elements into sublists." (sameFunctionList tPack solution9)
                   , testProperty "10. Run-length encoding of a list."
                                  (sameFunctionList tRun solution10)
-                  , testProperty "11. Modified run length encoding"
-                                 (sameFunctionList tEncodeModified solution11)
-                  , testProperty "12. Decode run length encoding" (sameFunctionListItem tDecodeRunEncoding solution12)
-                  ]
+                  ,testProperty "11. Modified run length encoding"
+                                (sameFunctionList tEncodeModified solution11)
+                  , testProperty "12. Decode run length encoding" (sameFunctionListItem decodeModified solution12)
+                  , testProperty "13. Modified run length encoding without sublists"
+                                 (sameFunctionList tEncodeModified solution13)
+                  , testProperty "14. Duplicate all elements of the list."  (sameFunctionList tDuplicate solution14)
+                  , testProperty "15. Replicate the element a given number of times" repeatProp ]
 
 
 sameFunctionList :: (Show a, Eq a) => ([TestType] -> a) -> ([TestType] -> a) -> [TestType] -> Bool
@@ -82,5 +85,16 @@ tEncodeModified = map encodeHelper . tRun
       encodeHelper (1,x) = Single x
       encodeHelper (n,x) = Multiple n x
 
-tDecodeRunEncoding :: [ListItem a] -> [a]
-tDecodeRunEncoding = undefined
+decodeModified :: [ListItem a] -> [a]
+decodeModified = concatMap decodeHelper
+    where
+      decodeHelper (Single x)     = [x]
+      decodeHelper (Multiple n x) = replicate n x
+
+tDuplicate list = concat [[x,x] | x <- list]
+
+repeatProp :: Int -> [TestType] ->  Bool
+repeatProp i = sameFunctionList (r i) (`solution15` i)
+           where
+                r :: Int -> [TestType] -> [TestType]
+                r = concatMap . replicate
