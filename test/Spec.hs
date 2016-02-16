@@ -6,4 +6,4 @@ main :: IO ()
 main = defaultMain tests
 
 tests :: TestTree
-tests = testGroup "99 Problems" [Lists.tests]
+tests = testGroup "99 Problems" $ reverse [Lists.tests]

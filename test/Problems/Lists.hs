@@ -10,7 +10,7 @@ import           Types
 type TestType = Int
 
 tests :: TestTree
-tests = testGroup "List Problems"
+tests = testGroup "List Problems" $ reverse
                   [ testProperty "1. Return the last element in the list" lastProp
                   , testProperty "2. Return all but the last element in the list" initProp
                   , testProperty "3. Return the kth element in the list" kthProp
