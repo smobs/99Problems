@@ -41,8 +41,8 @@ initProp :: [TestType] -> Bool
 initProp [] = True
 initProp xs = init xs == solution2 xs
 
-kthProp :: Int -> [TestType] -> Property
-kthProp i xs = i == 0 ==>
+kthProp :: Positive Int -> [TestType] -> Property
+kthProp (Positive i) xs = i < length xs  ==>
         xs !! i === solution3 i xs
 
 palindromeProperty :: Property
@@ -51,7 +51,7 @@ palindromeProperty = palinProp solution6 .&&.  (notPalindrone (\xs -> solution6 
 palinProp :: ([TestType] -> Bool) ->  [TestType] -> Property
 palinProp f [] = property $ f []
 palinProp f [x] = property $ f [x]
-palinProp f xs =  (xs /= []) ==> (f p1) && (f p2)
+palinProp f xs = property $ (f p1) && (f p2)
               where p1 = xs ++ (reverse xs)
                     p2 = xs ++ (tail (reverse xs))
 
