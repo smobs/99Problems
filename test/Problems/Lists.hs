@@ -113,8 +113,8 @@ dropNthProp  (Positive i) = sameFunctionList (r i) (`solution16` i)
 splitProp :: Positive Int -> [TestType] ->  Property
 splitProp (Positive i) xs = i < length xs ==>(splitAt i xs ) == (solution17 xs i)
 
-sliceProp :: Positive Int -> Positive Int -> [TestType] ->  Property
-sliceProp (Positive i) (Positive j) xs = i + j < length xs ==> (slice xs i j) ==  (solution18 xs i j)
+sliceProp :: Int -> Int -> [TestType] ->  Bool
+sliceProp (i) (j) xs =  (slice xs i j) ==  (solution18 xs i j)
           where
           slice [] _ _ = Just []
           slice xs k n  | k == n = Just []
@@ -129,6 +129,6 @@ rotateProp i = sameFunctionList (rotate i) (`solution19` i)
                rotate n xs = take (length xs) $ drop (length xs + n) $ cycle xs
 
 removeProp :: Positive Int -> [TestType] -> Property
-removeProp (Positive i) xs = i < length xs ==> sameFunction (removeAt i) (`solution20`i) xs
+removeProp (Positive i) xs = i < length xs ==> sameFunction (snd . removeAt i) (`solution20`i) xs
            where
            removeAt n xs = (xs !! (n - 1), take (n - 1) xs ++ drop n xs)
