@@ -5,6 +5,7 @@ Tests for https://wiki.haskell.org/H-99:_Ninety-Nine_Haskell_Problems
 Clone this repo.
 
 Install [stack](http://docs.haskellstack.org/en/stable/README.html)
+
 Run:
 * `stack build` this could take some time
 * `stack exec run-tests`
