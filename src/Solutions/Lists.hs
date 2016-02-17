@@ -3,19 +3,20 @@ module Solutions.Lists where
 import           Types
 
 solution1 :: [a] -> a
-solution1 = undefined
+solution1 = head . reverse
 
 solution2 :: [a] -> [a]
-solution2 = undefined
+solution2 = reverse . tail . reverse
 
 solution3 :: Int -> [a] -> a
-solution3 = undefined
+solution3 0 xs = head xs
+solution3 n xs = solution3 (n - 1) (tail xs)
 
 solution4 :: [a] -> Int
-solution4 = undefined
+solution4 = foldr (const (+ 1) ) 0
 
 solution5 :: [a] -> [a]
-solution5 = undefined
+solution5 = foldl (flip (:)) []
 
 solution6 :: [a] -> Bool
 solution6 = undefined
