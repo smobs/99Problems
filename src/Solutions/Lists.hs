@@ -1,6 +1,7 @@
 module Solutions.Lists where
 
 import           Types
+import qualified Data.List as L
 
 solution1 :: [a] -> a
 solution1 = head . reverse
@@ -25,23 +26,29 @@ solution6 (h : xs) = (head (reverse xs)) == h && solution6 (init xs)
 
 solution7 :: NestedList a -> [a]
 solution7 (Elem x) = [x] 
-solution7 (List xs) = concatMap solution7 xs
+solution7 (List xs) = concatMap solution7 xs 
 
 
 solution8 :: Eq a => [a] -> [a]
-solution8 = undefined
+solution8 (h1 : rs@(h2 : _)) = if h1 == h2 then solution8 rs else h1 : (solution8 rs)
+solution8 h = h
 
 solution9 :: Eq a => [a] -> [[a]]
-solution9 = undefined
+solution9 arg @ (h : t) =  (takeWhile (== h) arg) : solution9 (dropWhile (== h) arg)
+solution9 [] = []
 
 solution10 :: Eq a => [a] -> [(Int, a)]
-solution10 = undefined
+solution10 = map (\x -> (length x, head x) ) . L.group 
 
 solution11 :: Eq a => [a] -> [ListItem a]
-solution11 = undefined
+solution11 = map f . solution10
+    where f (1, xs) = Single xs
+          f p = uncurry Multiple p
 
 solution12 :: [ListItem a] -> [a]
-solution12 = undefined
+solution12 = concatMap f 
+    where f (Multiple i x) = replicate i x 
+          f (Single x) = [x]
 
 solution13 :: Eq a => [a] -> [ListItem a]
 solution13 = undefined
