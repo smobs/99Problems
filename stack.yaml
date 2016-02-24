@@ -6,14 +6,9 @@ resolver: lts-5.0
 # Local packages, usually specified by relative directory name
 packages:
 - '.'
-- location:
-        git: git@github.com:ches/testloop.git
-        commit: 1f65f5ec50adccb458e8c2ab56de02125da57cc7
 
 # Packages to be pulled from upstream that are not in the resolver (e.g., acme-missiles-0.3)
-extra-deps:
-- fsnotify-0.0.8
-
+extra-deps: []
 # Override default flag values for local packages and extra-deps
 flags: {}
 
