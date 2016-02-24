@@ -16,8 +16,7 @@ tests = testGroup "List Problems" $ reverse
                   , testProperty "4. Find the number of elements in the list" (sameFunctionList length solution4)
                   , testProperty "5. Reverse a list" (sameFunctionList reverse solution5)
                   , testProperty "6. Find out whether a list is a palindrome" palindromeProperty
-                  , testProperty "7. Flatten a nested list" flattenProp
-                  , testProperty "8. Eliminate duplicates" (sameFunctionList L.nub solution8)
+                  , testProperty "8. Eliminate duplicates" (sameFunctionList tDeduplicate solution8)
                   , testProperty "9. Pack consecutive duplicates of list elements into sublists." (sameFunctionList tPack solution9)
                   , testProperty "10. Run-length encoding of a list."
                                  (sameFunctionList tRun solution10)
@@ -53,6 +52,8 @@ kthProp :: Positive Int -> [TestType] -> Property
 kthProp (Positive i) xs = i < length xs  ==>
         xs !! i === solution3 i xs
 
+tDeduplicate = map head . L.group
+        
 palindromeProperty :: Property
 palindromeProperty = palinProp solution6 .&&.  (notPalindrone (\xs -> solution6 xs))
 
