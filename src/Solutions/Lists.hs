@@ -18,11 +18,15 @@ solution4 = foldr (const (+ 1) ) 0
 solution5 :: [a] -> [a]
 solution5 = foldl (flip (:)) []
 
-solution6 :: [a] -> Bool
-solution6 = undefined
+solution6 :: Eq a => [a] -> Bool
+solution6 [] = True
+solution6 [a] = True
+solution6 (h : xs) = (head (reverse xs)) == h && solution6 (init xs)  
 
 solution7 :: NestedList a -> [a]
-solution7 = undefined
+solution7 (Elem x) = [x] 
+solution7 (List xs) = concatMap solution7 xs
+
 
 solution8 :: Eq a => [a] -> [a]
 solution8 = undefined
