@@ -5,9 +5,9 @@ import           Test.Tasty.QuickCheck
 data NestedList a = Elem a | List [NestedList a] deriving (Show, Eq, Ord)
 
 instance Arbitrary a => Arbitrary (NestedList a) where
-         arbitrary = oneof
-                      [ Elem <$> arbitrary
-                      , List <$> arbitrary
+         arbitrary = frequency
+                      [ (10, Elem <$> arbitrary)
+                      , (1, List <$> arbitrary)
                       ]
 
 
