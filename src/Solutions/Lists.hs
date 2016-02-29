@@ -62,10 +62,13 @@ solution19 = undefined
 solution20 :: [a] -> Int -> [a]
 solution20 = undefined
 
+solution21 :: a -> Int -> [a] -> [a]
 solution21 = undefined
 
+solution22 :: Int -> Int -> [Int]
 solution22 = undefined
 
+solution23 :: Int -> [a] -> IO [a]
 solution23 = undefined
 
 solution24 = undefined
