@@ -150,10 +150,10 @@ randomSelectProp (Positive i) xs = i < length xs ==>
                          rs <- solution23 i xs
                          return (length rs == i && (all id . map (`L.elem` xs)) rs))
 
-deterministic :: Positive Int -> Int -> Int  -> Property
-deterministic (Positive i) x y = let xs = [x .. y]
-              in i < length xs - 1 ==>
-                     ioProperty $ do
-                         rs <- solution23 i xs
-                         rs' <- solution23 i xs
-                         return $ rs == rs'
+deterministic :: Positive Int -> [TestType]  -> Property
+deterministic (Positive i) xs =
+               i < length xs - 1 ==>
+                   ioProperty $ do
+                       rs <- solution23 i xs
+                       rs' <- solution23 i xs
+                       return $ rs == rs'
