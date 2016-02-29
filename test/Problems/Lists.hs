@@ -31,7 +31,11 @@ tests = testGroup "List Problems" $ reverse
                   , testProperty "17. Split a list into two parts" splitProp
                   , testProperty "18. Splice a list." sliceProp
                   , testProperty "19. Rotate list to the left." rotateProp
-                  , testProperty "20. Remove element at." removeProp]
+                  , testProperty "20. Remove element at." removeProp
+                  , testProperty "21. Insert element at" insertProp
+                  , testProperty "22. List all integers in range" rangeProp
+                  , testProperty "23. Select x elements at random." randomSelectProp
+                  , testProperty "23.2 Elements should be random" (expectFailure deterministic)]
 
 
 sameFunctionList :: (Show a, Eq a) => ([TestType] -> a) -> ([TestType] -> a) -> [TestType] -> Bool
@@ -53,7 +57,7 @@ kthProp (Positive i) xs = i < length xs  ==>
         xs !! i === solution3 i xs
 
 tDeduplicate = map head . L.group
-        
+
 palindromeProperty :: Property
 palindromeProperty = palinProp solution6 .&&.  (notPalindrone (\xs -> solution6 xs))
 
@@ -133,3 +137,23 @@ removeProp :: Positive Int -> [TestType] -> Property
 removeProp (Positive i) xs = i < length xs ==> sameFunction (snd . removeAt i) (`solution20`i) xs
            where
            removeAt n xs = (xs !! (n - 1), take (n - 1) xs ++ drop n xs)
+
+insertProp :: TestType -> Positive Int -> [TestType] -> Property
+insertProp t (Positive i) xs = i < length xs ==> sameFunction ((\(a,b) -> a ++ [t] ++ b)  . L.splitAt i) (solution21 t i)
+
+rangeProp :: Int -> Int -> Property
+rangeProp x y = x <= y ==> [x .. y] == solution22 x y
+
+randomSelectProp :: Positive Int -> [TestType] ->  Property
+randomSelectProp (Positive i) xs = i < length xs ==>
+                    (ioProperty $ do
+                         rs <- solution23 i xs
+                         return (length rs == i && (all id . map (`L.elem` xs)) rs))
+
+deterministic :: Positive Int -> Int -> Int  -> Property
+deterministic (Positive i) x y = let xs = [x .. y]
+              in i < length xs - 1 ==>
+                     ioProperty $ do
+                         rs <- solution23 i xs
+                         rs' <- solution23 i xs
+                         return $ rs == rs'
