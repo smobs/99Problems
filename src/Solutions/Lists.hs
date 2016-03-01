@@ -74,6 +74,7 @@ solution23 = undefined
 solution24 :: Num a => Int -> Int -> IO [Int]
 solution24 = undefined
 
+solution25 :: [a] -> IO [a]
 solution25 = undefined
 
 solution26 = undefined

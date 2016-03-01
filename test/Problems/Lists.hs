@@ -36,9 +36,11 @@ tests = testGroup "List Problems" $ reverse
                   , testProperty "21. Insert element at" insertProp
                   , testProperty "22. List all integers in range" rangeProp
                   , testProperty "23. Select x elements at random." randomSelectProp
-                  , testProperty "23.2 Elements should be random"  (\(Positive i, xs) -> i < length xs - 1  ==> isNondeterministic (`solution23` xs) (Positive i))
+                  , testProperty "23.2 Elements should be random"  (\(Positive i, xs) -> i < length xs - 1  ==> isNondeterministic (solution23 i xs))
                   , testProperty "24.1 Lotto is a set in range" randomSet
-                  , testProperty "24.2 Lotto is random" (\i -> (isNondeterministic (`solution24` i)))]
+                  , testProperty "24.2 Lotto is random" (\i n -> (isNondeterministic (solution24 n i)))
+                  , testProperty "25.1 Same elements" $ sameElementsProp solution25
+                  , testProperty "25.2 Perm is random" (\xs -> isNondeterministic (solution25 xs))]
 
 
 sameFunctionList :: (Show a, Eq a) => ([TestType] -> a) -> ([TestType] -> a) -> [TestType] -> Bool
@@ -159,12 +161,17 @@ randomSet (Positive m) (Positive i) = i < m ==> ioProperty $ do
         return $ length s == i && all f s
     where f x = x < m
 
-isNondeterministic :: (Eq (t TestType), Foldable t) => (Int -> IO (t TestType)) -> Positive Int -> Property
-isNondeterministic f =  expectFailure . deterministic f
+isNondeterministic :: (Eq (t TestType), Foldable t) => IO (t TestType) ->  Property
+isNondeterministic  =  expectFailure . deterministic
 
-deterministic :: (Eq (t TestType), Foldable t) => (Int  -> IO (t TestType)) -> Positive Int  -> Property
-deterministic f (Positive i) =
+deterministic :: (Eq (t TestType), Foldable t) =>  IO (t TestType)  -> Property
+deterministic f  =
                    ioProperty $ do
-                       rs <- f i
-                       rs' <- f i
+                       rs <- f
+                       rs' <- f
                        return $ rs == rs'
+
+sameElementsProp :: ([TestType] -> IO [TestType]) -> [TestType] -> Property
+sameElementsProp f xs = ioProperty $ do
+                 perm <- f xs
+                 return $ S.fromList perm == S.fromList xs
