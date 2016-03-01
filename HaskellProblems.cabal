@@ -29,6 +29,7 @@ test-suite HaskellProblems-test
   main-is:             Spec.hs
   build-depends:       base
                      , tasty
+                     , containers
                      , tasty-quickcheck
                      , HaskellProblems
 

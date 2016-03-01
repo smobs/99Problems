@@ -2,6 +2,7 @@ module Problems.Lists (tests)
  where
 
 import qualified Data.List             as L
+import qualified Data.Set              as S
 import           Solutions.Lists
 import           Test.Tasty
 import           Test.Tasty.QuickCheck
@@ -35,7 +36,9 @@ tests = testGroup "List Problems" $ reverse
                   , testProperty "21. Insert element at" insertProp
                   , testProperty "22. List all integers in range" rangeProp
                   , testProperty "23. Select x elements at random." randomSelectProp
-                  , testProperty "23.2 Elements should be random" (expectFailure deterministic)]
+                  , testProperty "23.2 Elements should be random"  (\(Positive i, xs) -> i < length xs - 1  ==> isNondeterministic (`solution23` xs) (Positive i))
+                  , testProperty "24.1 Lotto is a set in range" randomSet
+                  , testProperty "24.2 Lotto is random" (\i -> (isNondeterministic (`solution24` i)))]
 
 
 sameFunctionList :: (Show a, Eq a) => ([TestType] -> a) -> ([TestType] -> a) -> [TestType] -> Bool
@@ -147,13 +150,21 @@ rangeProp x y = x <= y ==> [x .. y] == solution22 x y
 randomSelectProp :: Positive Int -> [TestType] ->  Property
 randomSelectProp (Positive i) xs = i < length xs ==>
                     (ioProperty $ do
-                         rs <- solution23 i xs
-                         return (length rs == i && (all id . map (`L.elem` xs)) rs))
+                          rs <- solution23 i xs
+                          return (length rs == i && (all id . map (`L.elem` xs)) rs))
 
-deterministic :: Positive Int -> [TestType]  -> Property
-deterministic (Positive i) xs =
-               i < length xs - 1 ==>
+randomSet :: Positive Int -> Positive Int -> Property
+randomSet (Positive m) (Positive i) = i < m ==> ioProperty $ do
+        s <- S.fromList <$> solution24 m i
+        return $ length s == i && all f s
+    where f x = x < m
+
+isNondeterministic :: (Eq (t TestType), Foldable t) => (Int -> IO (t TestType)) -> Positive Int -> Property
+isNondeterministic f =  expectFailure . deterministic f
+
+deterministic :: (Eq (t TestType), Foldable t) => (Int  -> IO (t TestType)) -> Positive Int  -> Property
+deterministic f (Positive i) =
                    ioProperty $ do
-                       rs <- solution23 i xs
-                       rs' <- solution23 i xs
+                       rs <- f i
+                       rs' <- f i
                        return $ rs == rs'
