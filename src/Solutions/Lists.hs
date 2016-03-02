@@ -2,6 +2,7 @@ module Solutions.Lists where
 
 import           Types
 import qualified Data.List as L
+import Control.Applicative
 
 solution1 :: [a] -> a
 solution1 = head . reverse
@@ -51,16 +52,30 @@ solution12 = concatMap f
           f (Single x) = [x]
 
 solution13 :: Eq a => [a] -> [ListItem a]
-solution13 = undefined
+solution13 [] = []
+solution13 (h:t) = f h 1 t
+  where
+    f h i [] = [(gn h i)]
+    f h i (h2:t) 
+      | h==h2 = f h (i+1) t  
+      | otherwise = gn h i : f h2 1 t
+    gn h 1 = Single h
+    gn h i = Multiple i h
+        
 
 solution14 :: [a] -> [a]
-solution14 = undefined
+solution14 [] = []
+solution14 (h:t) = [h, h] ++ solution14 t
 
 solution15 :: [a] -> Int -> [a]
-solution15 = undefined
+solution15 xs i = xs <**> (replicate i id) 
 
 solution16 :: [a] -> Int -> [a]
-solution16 = undefined
+solution16 l x = f l x
+     where
+       f [] _ = []
+       f (h:t) 1 = f t x
+       f (h:t) y = h : (f t (y-1))
 
 solution17 :: [a] -> Int -> ([a], [a])
 solution17 = undefined
