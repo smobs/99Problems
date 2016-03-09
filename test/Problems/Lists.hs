@@ -40,7 +40,8 @@ tests = testGroup "List Problems" $ reverse
                   , testProperty "24.1 Lotto is a set in range" randomSet
                   , testProperty "24.2 Lotto is random" (\i n -> (isNondeterministic (solution24 n i)))
                   , testProperty "25.1 Same elements" $ sameElementsProp solution25
-                  , testProperty "25.2 Perm is random" (\xs -> isNondeterministic (solution25 xs))]
+                  , testProperty "25.2 Perm is random" (\xs -> isNondeterministic (solution25 xs))
+                  , testProperty "26. Select committee from list" selectCommitteeProp]
 
 
 sameFunctionList :: (Show a, Eq a) => ([TestType] -> a) -> ([TestType] -> a) -> [TestType] -> Bool
@@ -175,3 +176,10 @@ sameElementsProp :: ([TestType] -> IO [TestType]) -> [TestType] -> Property
 sameElementsProp f xs = ioProperty $ do
                  perm <- f xs
                  return $ S.fromList perm == S.fromList xs
+
+selectCommitteeProp :: (Positive Int) -> [TestType] -> Property
+selectCommitteeProp (Positive i) xs = i < length xs ==> S.fromList (solution26 i xs) == (S.fromList $ f i xs) 
+                     where 
+                           f :: Int -> [a] -> [[a]]
+                           f i' xs' = [ y:ys | y:xs'' <- L.tails xs'
+                                             , ys <- f (i - 1) xs'']
