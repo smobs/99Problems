@@ -135,20 +135,19 @@ splitProp (Positive i) xs = i < length xs ==>(splitAt i xs ) == (solution17 xs i
 sliceProp :: Int -> Int -> [TestType] ->  Bool
 sliceProp (i) (j) xs =  (slice xs i j) ==  (solution18 xs i j)
           where
-          slice [] _ _ = Just []
-          slice xs k n  | k == n = Just []
-                        | k > n || k > length xs ||
-                          n > length xs || k < 0 || n < 0 = Nothing
+          slice [] _ _ = Nothing
+          slice xs k n  | k > n || k > length xs ||
+                          n > length xs || k <= 0 || n <= 0 = Nothing
                         | k == 0 = Just (take n xs)
                         | otherwise = Just (drop (k-1) $ take n xs)
 
 rotateProp :: Int -> [TestType] -> Bool
 rotateProp i = sameFunctionList (rotate i) (`solution19` i)
            where
-               rotate n xs = take (length xs) $ drop (length xs + n) $ cycle xs
+               rotate n xs = take (length xs) $ drop (mod  n $ length xs) $ cycle xs
 
 removeProp :: Positive Int -> [TestType] -> Property
-removeProp (Positive i) xs = i < length xs ==> sameFunction (snd . removeAt i) (`solution20`i) xs
+removeProp (Positive i) xs = i < length xs ==> sameFunction (removeAt i) (`solution20`i) xs
            where
            removeAt n xs = (xs !! (n - 1), take (n - 1) xs ++ drop n xs)
 
