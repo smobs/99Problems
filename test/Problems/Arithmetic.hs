@@ -12,8 +12,8 @@ tests = testGroup "Arithmetic properties" $ reverse
                   , testProperty "33. Coprime" $ sameFunctionTwoInt (tCoprime) (uncurry solution33)
                   ]
 
-sameFunctionInt :: (Eq a, Show a) => (Int -> a) -> (Int -> a) -> Int -> Bool
-sameFunctionInt = sameFunction
+sameFunctionInt :: (Eq a, Show a) => (Int -> a) -> (Int -> a) -> Positive Int -> Bool
+sameFunctionInt f h (Positive i) = sameFunction f h i
 
 sameFunctionTwoInt :: (Eq a, Show a) => ((Int, Int) -> a) -> ((Int, Int) -> a) -> (Positive Int, Positive Int)  -> Bool 
 sameFunctionTwoInt f1 f2 (Positive x, Positive y) = sameFunction f1 f2 (x, y)
