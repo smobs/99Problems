@@ -78,16 +78,24 @@ solution16 l x = f l x
        f (h:t) y = h : (f t (y-1))
 
 solution17 :: [a] -> Int -> ([a], [a])
-solution17 = undefined
+solution17 l n = (take n l, drop n l)
 
 solution18 :: [a] -> Int -> Int -> Maybe [a]
-solution18 = undefined
+solution18 l s e 
+    | (s<=0 || e<=0) = Nothing 
+    | (e>(length l)) = Nothing
+    | (e<s)          = Nothing
+    | otherwise      = Just (take ((e+1)-s) (drop (s-1) l))
 
 solution19 :: [a] -> Int -> [a]
-solution19 = undefined
+solution19 [] _ = []
+solution19 l 0  = l
+solution19 (h : t) r 
+    | (r > 0)        = solution19 (t++[h]) (r-1)
+    | otherwise      = solution19 (h : t) (r + length(h:t))
 
 solution20 :: [a] -> Int -> (a, [a])
-solution20 = undefined
+solution20 l i = (l !! (i-1), uncurry (\ a b -> a++(tail b)) (splitAt (i-1) l))
 
 solution21 :: a -> Int -> [a] -> [a]
 solution21 = undefined
