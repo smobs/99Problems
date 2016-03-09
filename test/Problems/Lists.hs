@@ -2,7 +2,7 @@ module Problems.Lists (tests)
  where
 
 import qualified Data.List             as L
-import Data.Ord(comparing)
+import           Data.Ord (comparing)
 import qualified Data.Set              as S
 import           Solutions.Lists
 import           Test.Tasty
@@ -147,7 +147,7 @@ rotateProp i = sameFunctionList (rotate i) (`solution19` i)
                rotate n xs = take (length xs) $ drop (mod  n $ length xs) $ cycle xs
 
 removeProp :: Positive Int -> [TestType] -> Property
-removeProp (Positive i) xs = i < length xs ==> sameFunction (removeAt i) (`solution20`i) xs
+removeProp (Positive i) xs = i < length xs ==> sameFunction (removeAt i) (`solution20` i) xs
            where
            removeAt n xs = (xs !! (n - 1), take (n - 1) xs ++ drop n xs)
 
