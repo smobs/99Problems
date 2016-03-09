@@ -17,6 +17,7 @@ library
   hs-source-dirs:      src
   exposed-modules:     Types
                      , Solutions.Lists
+                     , Solutions.Arithmetic
   build-depends:       base >= 4.7 && < 5
                      , tasty-quickcheck
                      , random
@@ -26,7 +27,8 @@ library
 test-suite HaskellProblems-test
   type:                exitcode-stdio-1.0
   hs-source-dirs:      test
-                     
+  other-modules:       Problems.Lists
+                     , Problems.Arithmetic
   main-is:             Spec.hs
   build-depends:       base
                      , tasty
