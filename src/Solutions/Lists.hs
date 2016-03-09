@@ -80,7 +80,11 @@ solution25 = undefined
 solution26 :: Int -> [a] -> [[a]]
 solution26 = undefined
 
-solution27 = undefined
+solution27a :: [a] -> [[[a]]] 
+solution27a = undefined
+
+solution27b :: [Int] -> [a] -> [[[a]]]
+solution27b = undefined
 
 solution28 = undefined
 

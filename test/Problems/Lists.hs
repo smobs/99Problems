@@ -41,7 +41,9 @@ tests = testGroup "List Problems" $ reverse
                   , testProperty "24.2 Lotto is random" (\i n -> (isNondeterministic (solution24 n i)))
                   , testProperty "25.1 Same elements" $ sameElementsProp solution25
                   , testProperty "25.2 Perm is random" (\xs -> isNondeterministic (solution25 xs))
-                  , testProperty "26. Select committee from list" selectCommitteeProp]
+                  , testProperty "26. Select committee from list" selectCommitteeProp
+                  , testProperty "27a Group 9 workers into 2,3,4 disjoint sets " (\xs -> length xs == 9 ==> sameFunctionList (groupWorkers [2,3,4]) solution27a xs)
+                  , testProperty "27b Group workers generally" groupWorkersProp]
 
 
 sameFunctionList :: (Show a, Eq a) => ([TestType] -> a) -> ([TestType] -> a) -> [TestType] -> Bool
@@ -183,3 +185,20 @@ selectCommitteeProp (Positive i) xs = i < length xs ==> S.fromList (solution26 i
                            f :: Int -> [a] -> [[a]]
                            f i' xs' = [ y:ys | y:xs'' <- L.tails xs'
                                              , ys <- f (i - 1) xs'']
+                    
+
+groupWorkersProp :: [Int] -> [TestType] -> Property
+groupWorkersProp is xs  = sum is == length xs ==>
+                 sameFunction (groupWorkers is) (solution27b is) xs
+
+groupWorkers :: [Int] -> [TestType] -> [[[TestType]]]
+groupWorkers [] = const [[]]
+groupWorkers (n:ns) = concatMap (uncurry $ (. groupWorkers ns) . map . (:)) . combination n
+             where
+             combination :: Int -> [a] -> [([a], [a])]
+             combination 0 xs     = [([],xs)]
+             combination n []     = []
+             combination n (x:xs) = ts ++ ds
+               where
+                 ts = [ (x:ys,zs) | (ys,zs) <- combination (n-1) xs ]
+                 ds = [ (ys,x:zs) | (ys,zs) <- combination  n    xs ]
