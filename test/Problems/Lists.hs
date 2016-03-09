@@ -2,6 +2,7 @@ module Problems.Lists (tests)
  where
 
 import qualified Data.List             as L
+import Data.Ord(comparing)
 import qualified Data.Set              as S
 import           Solutions.Lists
 import           Test.Tasty
@@ -43,11 +44,16 @@ tests = testGroup "List Problems" $ reverse
                   , testProperty "25.2 Perm is random" (\xs -> isNondeterministic (solution25 xs))
                   , testProperty "26. Select committee from list" selectCommitteeProp
                   , testProperty "27a Group 9 workers into 2,3,4 disjoint sets " (\xs -> length xs == 9 ==> sameFunctionList (groupWorkers [2,3,4]) solution27a xs)
-                  , testProperty "27b Group workers generally" groupWorkersProp]
+                  , testProperty "27b Group workers generally" groupWorkersProp
+                  , testProperty "28a. Sort by sublist length" $ sameFunctionListList (tSortByLength) solution28a
+                  , testProperty "28b. Sort by sublist rarity" $ sameFunctionListList (tSortByRarity) solution28b]
 
+
+sameFunctionListList :: (Show a, Eq a) => ([[TestType]] -> a) -> ([[TestType]] -> a) -> [[TestType]] -> Bool
+sameFunctionListList = sameFunction
 
 sameFunctionList :: (Show a, Eq a) => ([TestType] -> a) -> ([TestType] -> a) -> [TestType] -> Bool
-sameFunctionList = sameFunction
+sameFunctionList = sameFunction 
 
 sameFunctionListItem :: (Show a, Eq a) => ([ListItem TestType] -> a) -> ([ListItem TestType] -> a) -> [ListItem TestType] -> Bool
 sameFunctionListItem = sameFunction
@@ -202,3 +208,9 @@ groupWorkers (n:ns) = concatMap (uncurry $ (. groupWorkers ns) . map . (:)) . co
                where
                  ts = [ (x:ys,zs) | (ys,zs) <- combination (n-1) xs ]
                  ds = [ (ys,x:zs) | (ys,zs) <- combination  n    xs ]
+
+tSortByLength :: [[a]] -> [[a]]
+tSortByLength = L.sortBy (comparing length)
+
+tSortByRarity :: [[a]] -> [[a]]
+tSortByRarity = concat . tSortByLength . L.groupBy (\x y -> length x == length y) .  tSortByLength
