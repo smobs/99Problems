@@ -59,7 +59,7 @@ solution18 = undefined
 solution19 :: [a] -> Int -> [a]
 solution19 = undefined
 
-solution20 :: [a] -> Int -> [a]
+solution20 :: [a] -> Int -> (a, [a])
 solution20 = undefined
 
 solution21 :: a -> Int -> [a] -> [a]
