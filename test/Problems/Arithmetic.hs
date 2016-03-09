@@ -10,6 +10,7 @@ tests = testGroup "Arithmetic properties" $ reverse
                   [ testProperty "31. is prime" $ (sameFunctionInt tIsPrime solution31)
                   , testProperty "32. Greatest common divisor" $ sameFunctionTwoInt (tGcd) (uncurry solution32)
                   , testProperty "33. Coprime" $ sameFunctionTwoInt (tCoprime) (uncurry solution33)
+                  , testProperty "34. Totient-phi" $ sameFunctionInt tTotient solution34 
                   ]
 
 sameFunctionInt :: (Eq a, Show a) => (Int -> a) -> (Int -> a) -> Positive Int -> Bool
@@ -30,3 +31,6 @@ tGcd  = uncurry f
 
 tCoprime :: (Int, Int) -> Bool
 tCoprime = (1 == ) . tGcd
+
+tTotient :: Int -> Int
+tTotient i = length . filter (\x -> tCoprime (i, x)) $ [1 .. i - 1]
