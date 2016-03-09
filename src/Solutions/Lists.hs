@@ -95,8 +95,10 @@ solution19 (h : t) r
     | otherwise      = solution19 (h : t) (r + length(h:t))
 
 solution20 :: [a] -> Int -> (a, [a])
-solution20 l i = (l !! (i-1), uncurry (\ a b -> a++(tail b)) (splitAt (i-1) l))
-
+solution20 l i = (r , xs ++ rs)
+    where
+        (xs, (r:rs)) = splitAt (i - 1) l
+        
 solution21 :: a -> Int -> [a] -> [a]
 solution21 = undefined
 
