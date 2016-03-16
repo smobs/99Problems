@@ -2,6 +2,7 @@ module Solutions.Lists where
 
 import           Types
 import qualified Data.List as L
+import System.Random
 import Control.Applicative
 
 solution1 :: [a] -> a
@@ -100,14 +101,30 @@ solution20 l i = (r , xs ++ rs)
         (xs, (r:rs)) = splitAt (i - 1) l
         
 solution21 :: a -> Int -> [a] -> [a]
-solution21 = undefined
+solution21 n p l = xs ++ [n] ++ rs
+     where
+        (xs, rs) = splitAt (p - 1) l
 
 solution22 :: Int -> Int -> [Int]
-solution22 = undefined
+solution22 s e 
+        | s == e = [e]
+        | otherwise = s : solution22 (s + 1) e
+        
 
 solution23 :: Int -> [a] -> IO [a]
-solution23 = undefined
-
+solution23 i xs = do
+    gen <- newStdGen
+    return $ f i xs gen 
+    where 
+        p :: RandomGen g => g -> [a] -> (a, [a], g)
+        p r xs = let (i, r') = randomR (0, length xs - 1) r in
+                 let (x', xs') = solution20 xs i in
+                 (x', xs', r')
+        
+        f 0 _ _ = []
+        f i xs gen = let (x, xs', gen') = p gen xs in
+                     x : f (i - 1) xs' gen'
+                     
 solution24 :: Int -> Int -> IO [Int]
 solution24 = undefined
 
