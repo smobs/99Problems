@@ -120,19 +120,27 @@ solution23 i xs = do
         p r xs = let (i, r') = randomR (0, length xs - 1) r in
                  let (x', xs') = solution20 xs i in
                  (x', xs', r')
-        
+        f :: RandomGen g => Int -> [a] -> g -> [a]
         f 0 _ _ = []
         f i xs gen = let (x, xs', gen') = p gen xs in
                      x : f (i - 1) xs' gen'
                      
 solution24 :: Int -> Int -> IO [Int]
-solution24 = undefined
+solution24 m n = let xs = [1..m]
+                 in solution23 n xs 
 
 solution25 :: [a] -> IO [a]
-solution25 = undefined
+solution25 xs = do 
+                 let l = length xs 
+                 indices <- solution24 l l 
+                 return $ map (\x -> xs !! (x-1)) indices   
 
 solution26 :: Int -> [a] -> [[a]]
-solution26 = undefined
+solution26 0 _ = [[]]
+solution26 k [] = []
+solution26 k (h : xs) =
+                solution26 k xs ++ map (\y -> (h : y)) (solution26 (k-1) xs)
+
 
 solution27a :: [a] -> [[[a]]] 
 solution27a = undefined
@@ -145,7 +153,3 @@ solution28a = undefined
 
 solution28b :: [[a]] -> [[a]]
 solution28b = undefined
-
-solution29 = undefined
-
-solution30 = undefined
