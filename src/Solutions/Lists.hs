@@ -1,6 +1,7 @@
 module Solutions.Lists where
 
 import           Types
+import           Data.List ((\\)) 
 import qualified Data.List as L
 import System.Random
 import Control.Applicative
@@ -142,11 +143,15 @@ solution26 k (h : xs) =
                 solution26 k xs ++ map (\y -> (h : y)) (solution26 (k-1) xs)
 
 
-solution27a :: [a] -> [[[a]]] 
-solution27a = undefined
+solution27a :: Eq a => [a] -> [[[a]]] 
+solution27a l = 
+   [ [two, three, four] | two <- solution26 2 l, three <- solution26 3 (l \\ two), four <- [(l \\ two) \\ three ]]
 
-solution27b :: [Int] -> [a] -> [[[a]]]
-solution27b = undefined
+solution27b :: Eq a => [Int] -> [a] -> [[[a]]]
+solution27b [] [] = [[]]
+solution27b [] xs = []
+solution27b ns [] = []
+solution27b (n:ns) xs = [ thing : otherthing | thing <- solution26 n xs, otherthing <- solution27b ns (xs \\ thing) ]
 
 solution28a :: [[a]] -> [[a]]
 solution28a = undefined
