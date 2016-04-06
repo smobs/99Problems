@@ -2,7 +2,7 @@ module Problems.Lists (tests)
  where
 
 import qualified Data.List             as L
-import           Data.Ord (comparing)
+import Data.Ord(comparing)
 import qualified Data.Set              as S
 import           Solutions.Lists
 import           Test.Tasty
@@ -147,12 +147,12 @@ rotateProp i = sameFunctionList (rotate i) (`solution19` i)
                rotate n xs = take (length xs) $ drop (mod  n $ length xs) $ cycle xs
 
 removeProp :: Positive Int -> [TestType] -> Property
-removeProp (Positive i) xs = i < length xs ==> sameFunction (removeAt i) (`solution20` i) xs
+removeProp (Positive i) xs = i < length xs ==> sameFunction (removeAt i) (`solution20`i) xs
            where
            removeAt n xs = (xs !! (n - 1), take (n - 1) xs ++ drop n xs)
 
 insertProp :: TestType -> Positive Int -> [TestType] -> Property
-insertProp t (Positive i) xs = i < length xs ==> sameFunction ((\(a,b) -> a ++ [t] ++ b)  . L.splitAt i) (solution21 t i)
+insertProp t (Positive i) xs = i < length xs && 0 /= i ==> sameFunction ((\(a,b) -> a ++ [t] ++ b)  . L.splitAt (i -1)) (solution21 t i)
 
 rangeProp :: Int -> Int -> Property
 rangeProp x y = x <= y ==> [x .. y] == solution22 x y
@@ -188,8 +188,8 @@ selectCommitteeProp :: (Positive Int) -> [TestType] -> Property
 selectCommitteeProp (Positive i) xs = i < length xs ==> S.fromList (solution26 i xs) == (S.fromList $ f i xs) 
                      where 
                            f :: Int -> [a] -> [[a]]
-                           f i' xs' = [ y:ys | y:xs'' <- L.tails xs'
-                                             , ys <- f (i - 1) xs'']
+                           f 0 _  = [ [] ]
+                           f i' xs' = [ y:ys | y:xs'' <- L.tails xs', ys <- f (i' - 1) xs'']
                     
 
 groupWorkersProp :: [Int] -> [TestType] -> Property
