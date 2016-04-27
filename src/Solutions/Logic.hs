@@ -32,11 +32,26 @@ equiv :: Bool -> Bool -> Bool
 equiv = (==)
 
 
-table3 :: (Bool -> Bool -> Bool) -> [[Bool]]
-table3 f =  [[a , b , f a b] | a <- [True, False], b <- [True, False]]
+table :: (Bool -> Bool -> Bool) -> [[Bool]]
+table f =  [[a , b , f a b] | a <- [True, False], b <- [True, False]]
 
-table4 :: [[Bool]] -> IO ()
-table4 = mapM_ (\x -> putStrLn  (show x) ) 
+printTable :: [[Bool]] -> IO ()
+printTable = mapM_ (\x -> putStrLn  (show x) ) 
 
-table5 :: (Bool -> Bool -> Bool) -> IO ()
-table5 = table4 . table3 
+truthTable :: (Bool -> Bool -> Bool) -> IO ()
+truthTable = printTable . table 
+
+perm 0 = [[]]
+perm n = (map (\x -> True: x) (perm (n-1)))
+               ++
+           (map (\x -> False: x) (perm (n-1)))
+           
+tableN :: Int -> ([Bool] -> Bool) -> [[Bool]]
+tableN n f =
+    map (\x -> x ++ [f x]) (perm n) 
+
+grey :: Int -> [[Bool]]
+grey 0 = [[]]
+grey n = (map (\x -> [True] ++ x) g ) ++ (map (\x -> [False] ++ x) (reverse g))
+      where
+         g = grey (n-1) 
