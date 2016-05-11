@@ -18,6 +18,7 @@ library
   exposed-modules:     Types
                      , Solutions.Lists
                      , Solutions.Arithmetic
+                     , Solutions.Trees
   build-depends:       base >= 4.7 && < 5
                      , tasty-quickcheck
                      , random
