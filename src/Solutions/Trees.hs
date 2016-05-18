@@ -38,3 +38,37 @@ testSymmetric = symmetric . binaryTree
 symCbal :: Int -> [Tree Int]
 symCbal = filter symmetric .  cbalTree
 
+hBal :: Int -> [Tree Int]
+hBal i
+  | i == 0    = [Empty]
+  | i < 0     = []
+  | otherwise = [Branch i l r
+                | (il, ir) <- [(i - 1, i -1), (i-2, i -1), (i-1, i-2)]
+                , l <- hBal il
+                , r <- hBal ir
+                ]
+
+minN :: Int -> Int
+minN 0 = 0
+minN 1 = 1
+minN h =
+    let h_1 = minN (h-1)
+        h_2 = minN (h-2)
+    in
+       min (h_1 + h_1 + 1) (h_1 + h_2 + 1) 
+
+maxN :: Int -> Int
+maxN 0 = 0
+maxN n = 1 + 2 * (maxN (n - 1))
+
+maxH :: Int -> Int
+maxH x = L.last [ i | i <- [1..x], minN i <= x ]
+
+hBalN :: Int -> [Tree Int]
+hBalN n =
+  let h = maxH n
+  in filter (\t -> n == countNodes t) $ concat $ map hBal $ L.dropWhile (\x -> n > maxN x) $ [0 .. h]
+  where
+    countNodes :: Tree a -> Int
+    countNodes Empty = 0
+    countNodes (Branch _ l r) = 1 + (countNodes l) + (countNodes r)
