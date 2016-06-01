@@ -104,10 +104,10 @@ completeBinaryTree' x n
   | otherwise = Branch x (completeBinaryTree' (2*x) n) (completeBinaryTree' ((2*x)+1) n)
 
 layout :: Tree a -> Tree (a, (Int, Int))
-layout = fst . layout' 1 
+layout = fst . layout' 1 1
 
-layout' :: Int -> Tree a -> (Tree (a, (Int, Int)), Int)
-layout' x Empty = (Empty, x)
-layout' x (Branch a l r) = (Branch (a, (x1, 0)) t1 t2, x2)
-      where (t1, x1) = layout' x l
-            (t2, x2) = layout' (x1+1) r
+layout' :: Int -> Int -> Tree a -> (Tree (a, (Int, Int)), Int)
+layout' x y Empty = (Empty, x)
+layout' x y (Branch a l r) = (Branch (a, (x1, y)) t1 t2, x2)
+      where (t1, x1) = layout' x (y+1) l
+            (t2, x2) = layout' (x1+1) (y+1) r
