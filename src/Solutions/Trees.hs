@@ -72,3 +72,42 @@ hBalN n =
     countNodes :: Tree a -> Int
     countNodes Empty = 0
     countNodes (Branch _ l r) = 1 + (countNodes l) + (countNodes r)
+
+countLeaves :: Tree a -> Int
+countLeaves Empty = 0
+countLeaves (Branch _ Empty Empty) = 1
+countLeaves (Branch _ l r) = countLeaves l + countLeaves r
+
+leaves :: Tree a -> [a]
+leaves Empty = []
+leaves (Branch v Empty Empty) = [v]
+leaves (Branch _ l r) = leaves l ++ leaves r 
+
+tree4 = Branch 1 (Branch 2 Empty (Branch 4 Empty Empty))
+                 (Branch 2 Empty Empty)                        
+
+internals :: Tree a -> [a]
+internals Empty = []
+internals (Branch _ Empty Empty) = []
+internals (Branch v l r) = v : internals l ++ internals r
+
+level :: Tree a -> Int -> [a]
+level Empty _ = []
+level (Branch v  _ _) 1 = [v]
+level (Branch _ l r) i = level l (i-1) ++ level r (i-1)
+
+completeBinaryTree :: Int -> Tree Int
+completeBinaryTree = completeBinaryTree' 1
+
+completeBinaryTree' x n
+  | x > n = Empty
+  | otherwise = Branch x (completeBinaryTree' (2*x) n) (completeBinaryTree' ((2*x)+1) n)
+
+layout :: Tree a -> Tree (a, (Int, Int))
+layout = fst . layout' 1 
+
+layout' :: Int -> Tree a -> (Tree (a, (Int, Int)), Int)
+layout' x Empty = (Empty, x)
+layout' x (Branch a l r) = (Branch (a, (x1, 0)) t1 t2, x2)
+      where (t1, x1) = layout' x l
+            (t2, x2) = layout' (x1+1) r
