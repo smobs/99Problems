@@ -111,3 +111,39 @@ layout' x y Empty = (Empty, x)
 layout' x y (Branch a l r) = (Branch (a, (x1, y)) t1 t2, x2)
       where (t1, x1) = layout' x (y+1) l
             (t2, x2) = layout' (x1+1) (y+1) r
+
+tree65 = Branch 'n'
+         (Branch 'k'
+          (Branch 'c'
+           (Branch 'a' Empty Empty)
+           (Branch 'e'
+            (Branch 'd' Empty Empty)
+            (Branch 'g' Empty Empty)
+           )
+          )
+          (Branch 'm' Empty Empty)
+         )
+         (Branch 'u'
+          (Branch 'p'
+           Empty
+           (Branch 'q' Empty Empty)
+          )
+          Empty
+         )
+
+treeDepth :: Tree a -> Int
+treeDepth Empty = 0
+treeDepth (Branch _ left right) = max (treeDepth left) (treeDepth right) + 1
+
+
+evenLayout :: Tree a -> Tree (a, (Int, Int))
+evenLayout tree = let depth = treeDepth tree
+   in layout'' (2^ depth) 0 tree depth
+
+layout'' x y Empty _ = Empty
+layout'' x y (Branch a l r) depth  = Branch (a, (x, y)) t1 t2
+  where t1 = layout'' (x - 2^(depth-1)) (y+1) l (depth-1)
+        t2 = layout'' (x + 2^(depth-1)) (y+1) r (depth-1)
+
+
+
